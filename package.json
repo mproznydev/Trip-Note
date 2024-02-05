@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mantine/core": "^7.3.2",
-    "@mantine/form": "^7.3.2",
-    "@mantine/hooks": "^7.3.2",
     "i18next": "^23.7.11",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
