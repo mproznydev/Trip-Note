@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@formatjs/intl-localematcher": "^0.5.4",
     "axios": "^1.6.7",
     "i18next": "^23.7.11",
+    "negotiator": "^0.6.3",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "prisma": "^5.7.1",
@@ -22,6 +24,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/negotiator": "^0.6.3",
     "autoprefixer": "^10.4.17",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
