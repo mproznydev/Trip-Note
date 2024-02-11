@@ -1,10 +1,10 @@
-import { i18n } from "@/i18n.config";
+import { Locale, i18n } from "@/i18n.config";
 import Link from "next/link";
 import React from "react";
 
 type CustomLinkProps = {
   href: string;
-  lang: string;
+  lang: Locale;
   [key: string]: any;
 };
 
