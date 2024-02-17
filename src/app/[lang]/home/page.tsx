@@ -1,17 +1,20 @@
-import { Locale } from "@/i18n.config";
-import { getDictionary } from "@/lib/dictionary";
+"use client";
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 
-export default async function Home({
-  params: { lang },
-}: {
-  params: { lang: Locale };
-}) {
-  const { homePage } = await getDictionary(lang);
+export default function Home() {
+  const Map = useMemo(
+    () =>
+      dynamic(() => import("@/components/map"), {
+        loading: () => <p>A map is loading</p>,
+        ssr: false,
+      }),
+    []
+  );
+
   return (
-    <main>
-      <h1 className="text-3xl font-bold underline px-[30px]">
-        {homePage.title}
-      </h1>
-    </main>
+    <div className="flex justify-center pt-8">
+      <Map zoom={13} position={[51.505, -0.09]} />
+    </div>
   );
 }
