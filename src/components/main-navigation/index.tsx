@@ -15,6 +15,16 @@ const navigationElements = [
     ],
   },
   {
+    triggerLabel: "login",
+    triggerUrl: "/login",
+    menuLinks: [
+      {
+        label: "login",
+        url: "/login",
+      },
+    ],
+  },
+  {
     triggerLabel: "first page",
     triggerUrl: "/first page",
     menuLinks: [
