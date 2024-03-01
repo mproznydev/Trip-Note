@@ -42,6 +42,7 @@ function getLocale(request: NextRequest): string | undefined {
 }
 
 export const config = {
-  // Matcher ignoring `/_next/` and `/api/`
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // A better regex from clerk docs
+  // Protects all routes, including api/trpc.
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
