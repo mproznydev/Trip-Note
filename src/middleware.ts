@@ -5,39 +5,29 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  handleLocale(request);
-}
-
-function handleLocale(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-  const isLocaleInPathname = i18n.locales.some((locale) =>
-    pathname.startsWith(`/${locale}`)
+  const { pathname } = request.nextUrl;
+  const pathnameHasLocale = i18n.locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (isLocaleInPathname) {
-    return null;
-  }
+  if (pathnameHasLocale) return;
 
   const locale = getLocale(request);
-  const localeUrl = new URL(
-    `/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`,
-    request.url
-  );
+
+  request.nextUrl.pathname = `/${locale}${pathname}`;
 
   return locale === i18n.defaultLocale
-    ? NextResponse.rewrite(localeUrl)
-    : NextResponse.redirect(localeUrl);
+    ? NextResponse.rewrite(request.nextUrl)
+    : NextResponse.redirect(request.nextUrl);
 }
 
-function getLocale(request: NextRequest): string | undefined {
+function getLocale(request: NextRequest): string {
   const negotiatorHeaders: Record<string, string> = {};
   request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
 
-  // @ts-ignore locales are readonly
-  const locales: string[] = i18n.locales;
   const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
 
-  const locale = matchLocale(languages, locales, i18n.defaultLocale);
+  const locale = matchLocale(languages, i18n.locales, i18n.defaultLocale);
   return locale;
 }
 
