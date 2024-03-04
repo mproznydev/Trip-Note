@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-interface IFormInput {
+interface FormInput {
   email: string;
   password: string;
 }
@@ -22,8 +22,8 @@ export default function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>();
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  } = useForm<FormInput>();
+  const onSubmit: SubmitHandler<FormInput> = (data) => console.log(data);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -45,13 +45,10 @@ export default function LoginForm() {
                 type="email"
                 {...register("email", {
                   required: true,
-                  minLength: 6,
-                  maxLength: 30,
+                  pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
                 })}
               />
-              {errors.email && (
-                <p role="alert">Email should be 6-30 characters.</p>
-              )}
+              {errors.email && <p role="alert">Wrong email.</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -60,7 +57,8 @@ export default function LoginForm() {
                 required
                 type="password"
                 {...register("password", {
-                  pattern: /^(?=.?[A-Z])(?=.?[a-z])(?=.*?[0-9])[^\s<>]{8,}$/,
+                  pattern:
+                    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,32}$/,
                 })}
               />
               {errors.password && <p role="alert">Wrong password.</p>}
