@@ -3,8 +3,11 @@ import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { auth } from "./auth";
 
-export function middleware(request: NextRequest) {
+export default auth(function middleware(request) {
+  console.log(`isLoggedIn: ${request.auth}`);
+
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = i18n.locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -19,7 +22,7 @@ export function middleware(request: NextRequest) {
   return locale === i18n.defaultLocale
     ? NextResponse.rewrite(request.nextUrl)
     : NextResponse.redirect(request.nextUrl);
-}
+});
 
 function getLocale(request: NextRequest): string {
   const negotiatorHeaders: Record<string, string> = {};
