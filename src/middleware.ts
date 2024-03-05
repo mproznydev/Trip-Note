@@ -1,11 +1,15 @@
-import { i18n } from "@/i18n.config";
 import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
+import NextAuth from "next-auth";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { auth } from "./auth";
 
-export default auth(function middleware(request) {
+import authConfig from "@/auth.config";
+import { i18n } from "@/i18n.config";
+
+const { auth: middleware } = NextAuth(authConfig);
+
+export default middleware((request) => {
   console.log(`isLoggedIn: ${request.auth}`);
 
   const { pathname } = request.nextUrl;
