@@ -1,5 +1,6 @@
 import "@/style/globals.css";
 import { Locale, i18n } from "@/i18n.config";
+import { GlobalContextProvider } from "@/context/store";
 
 export default function RootLayout({
   children,
@@ -11,7 +12,7 @@ export default function RootLayout({
   return (
     <html lang={params.lang}>
       <head></head>
-      <body>{children}</body>
+      <body><GlobalContextProvider>{children}</GlobalContextProvider></body>
     </html>
   );
 }
