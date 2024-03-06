@@ -4,15 +4,15 @@ import {
 } from "@/components/ui/navigation-menu";
 import CustomLink from "@/components/custom-link";
 
-export interface NavigationElTriggerProps {
+export interface NavigationElementTriggerProps {
   triggerLabel: string;
   triggerUrl?: string;
 }
 
-export const NavigationElTrigger = ({
+export const NavigationElementTrigger = ({
   triggerUrl,
   triggerLabel,
-}: NavigationElTriggerProps) => {
+}: NavigationElementTriggerProps) => {
   const TriggerLabelComponent = (
     <NavigationMenuTrigger>{triggerLabel}</NavigationMenuTrigger>
   );
