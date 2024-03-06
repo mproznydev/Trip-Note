@@ -1,5 +1,8 @@
 {
   "homePage": {
     "title": "Strona główna"
+  },
+  "loginPage": {
+    "title": "Zaloguj się"
   }
 }
