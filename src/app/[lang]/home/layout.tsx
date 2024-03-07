@@ -2,7 +2,7 @@
 
 import "@/style/globals.css";
 import { Locale } from "@/i18n.config";
-import MainNavigation from "@/components/main-navigation";
+import MainNavigation from "@/components/main-navigation/MainNavigation";
 
 export default function RootLayout({
   children,
