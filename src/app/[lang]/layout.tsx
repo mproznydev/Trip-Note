@@ -12,14 +12,16 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { lang: Locale };
 }) {
-  // const dictionary = await getDictionary(params.lang || i18n.defaultLocale);
+  const dictionary = await getDictionary(params.lang || i18n.defaultLocale);
 
   return (
     <html lang={params.lang}>
       <head></head>
-      {/* <DictionaryProvider dictionary={dictionary}> */}
-      {children}
-      {/* </DictionaryProvider> */}
+      <body>
+        <DictionaryProvider dictionary={dictionary}>
+          {children}
+        </DictionaryProvider>
+      </body>
     </html>
   );
 }
