@@ -1,51 +1,84 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
-import { i18n } from "@/i18n.config";
-
 import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
+import NextAuth from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 
-function getLocale(request: NextRequest): string | undefined {
+import authConfig from "@/auth.config";
+import { i18n } from "@/i18n.config";
+import {
+  DEFAULT_REDIRECT_ON_LOGIN,
+  DEFAULT_REDIRECT_ON_UNAUTHORIZED,
+  apiAuthPrefix,
+  authRoutes,
+  publicRoutes,
+} from "@/routes";
+
+const { auth: middleware } = NextAuth(authConfig);
+
+export default middleware((request) => {
+  const { nextUrl } = request;
+  const { currentLocale, pathWithoutLocale } = getPathData(request);
+  const locale = currentLocale ?? getLocale(request.headers);
+
+  const isLoggedIn = Boolean(request.auth);
+  const isApiAuthRoute = pathWithoutLocale.startsWith(apiAuthPrefix);
+  const isAuthRoute = authRoutes.includes(pathWithoutLocale);
+  const isProtectedRoute = !publicRoutes.includes(pathWithoutLocale);
+
+  if (isApiAuthRoute) return;
+
+  if (isAuthRoute && isLoggedIn) {
+    nextUrl.pathname = `/${locale}${DEFAULT_REDIRECT_ON_LOGIN}`;
+    return NextResponse.redirect(nextUrl);
+  }
+
+  if (isProtectedRoute && !isLoggedIn) {
+    nextUrl.pathname = `/${locale}${DEFAULT_REDIRECT_ON_UNAUTHORIZED}`;
+    return NextResponse.redirect(nextUrl);
+  }
+
+  if (currentLocale) return;
+
+  nextUrl.pathname = `/${locale}${pathWithoutLocale}`;
+
+  return locale === i18n.defaultLocale
+    ? NextResponse.rewrite(nextUrl)
+    : NextResponse.redirect(nextUrl);
+});
+
+interface PathData {
+  currentLocale: string | null;
+  pathWithoutLocale: string;
+}
+
+function getPathData(request: NextRequest): PathData {
+  const currentLocale = getCurrentPathLocale(request.nextUrl.pathname);
+  const pathWithoutLocale =
+    request.nextUrl.pathname.replace(`/${currentLocale}` ?? "", "") || "/";
+
+  return { currentLocale, pathWithoutLocale };
+}
+
+function getCurrentPathLocale(pathname: string): string | null {
+  return (
+    i18n.locales.find(
+      (locale) => pathname.startsWith(`/${locale}`) || pathname === `/${locale}`
+    ) ?? null
+  );
+}
+
+function getLocale(headers: Headers): string {
   const negotiatorHeaders: Record<string, string> = {};
-  request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
+  headers.forEach((value, key) => (negotiatorHeaders[key] = value));
 
-  // @ts-ignore locales are readonly
-  const locales: string[] = i18n.locales;
   const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
 
-  const locale = matchLocale(languages, locales, i18n.defaultLocale);
+  const locale = matchLocale(languages, i18n.locales, i18n.defaultLocale);
   return locale;
 }
 
-export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-  const pathnameIsMissingLocale = i18n.locales.every(
-    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-  );
-
-  // Redirect if there is no locale
-  if (pathnameIsMissingLocale) {
-    const locale = getLocale(request);
-    if (locale === i18n.defaultLocale) {
-      return NextResponse.rewrite(
-        new URL(
-          `/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`,
-          request.url
-        )
-      );
-    }
-
-    return NextResponse.redirect(
-      new URL(
-        `/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`,
-        request.url
-      )
-    );
-  }
-}
-
 export const config = {
-  // Matcher ignoring `/_next/` and `/api/`
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // A better regex from clerk docs
+  // Protects all routes, including api/trpc.
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
