@@ -7,12 +7,12 @@ import {
 } from "@/components/ui/navigation-menu";
 import CustomLink from "@/components/custom-link";
 import {
-  NavigationElTrigger,
-  type NavigationElTriggerProps,
-} from "@/components/navigation-el-trigger";
+  NavigationElementTrigger,
+  type NavigationElementTriggerProps,
+} from "@/components/navigation-element-trigger/NavigationElementTrigger";
 import { Locale } from "@/i18n.config";
 
-export interface NavigationElProps extends NavigationElTriggerProps {
+export interface NavigationElementProps extends NavigationElementTriggerProps {
   lang: Locale;
   menuLinks?: {
     label: string;
@@ -20,20 +20,20 @@ export interface NavigationElProps extends NavigationElTriggerProps {
   }[];
 }
 
-const NavigationEl = ({
+const NavigationElement = ({
   triggerLabel,
   triggerUrl,
   lang,
   menuLinks,
-}: NavigationElProps) => {
+}: NavigationElementProps) => {
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationElTrigger
+          <NavigationElementTrigger
             triggerUrl={triggerUrl}
             triggerLabel={triggerLabel}
-          ></NavigationElTrigger>
+          ></NavigationElementTrigger>
           <NavigationMenuContent>
             {menuLinks &&
               menuLinks.map((link, index) => (
@@ -55,4 +55,4 @@ const NavigationEl = ({
   );
 };
 
-export default NavigationEl;
+export default NavigationElement;
