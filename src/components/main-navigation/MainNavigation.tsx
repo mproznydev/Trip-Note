@@ -3,6 +3,8 @@ import { NavigationElementProps } from "../navigation-element/NavigationElement"
 import NavigationElement from "../navigation-element/NavigationElement";
 import { Locale } from "@/i18n.config";
 import { Button } from "../ui/button";
+import Logo from "../../assets/placeholder-logo-1.png";
+import Image from "next/image";
 
 const navigationElements = [
   {
@@ -20,12 +22,12 @@ const navigationElements = [
     ],
   },
   {
-    triggerLabel: "My Routes",
-    triggerUrl: "/my-routes",
+    triggerLabel: "My Trips",
+    triggerUrl: "/my-trips",
     menuLinks: [
       {
-        label: "second page",
-        url: "/second page",
+        label: "Add Trip",
+        url: "/add-trip",
       },
     ],
   },
@@ -35,6 +37,10 @@ const navigationElements = [
     menuLinks: [
       {
         label: "second page",
+        url: "/second page",
+      },
+      {
+        label: "Test test",
         url: "/second page",
       },
     ],
@@ -62,36 +68,41 @@ interface MainNavigationProps {
 
 const MainNavigation = ({ lang }: MainNavigationProps) => {
   return (
-    <>
-      <div className="flex justify-between">
-        <div className="flex">
-          {navigationElements.map(
-            ({ triggerLabel, triggerUrl, menuLinks }, index) => (
-              <NavigationElement
-                lang={lang}
-                key={index}
-                triggerLabel={triggerLabel}
-                triggerUrl={triggerUrl}
-                menuLinks={menuLinks}
-              ></NavigationElement>
-            )
-          )}
-        </div>
-        <div className="flex">
-          {rightNavigationElements.map(
-            ({ triggerLabel, triggerUrl, menuLinks }, index) => (
-              <NavigationElement
-                lang={lang}
-                key={index}
-                triggerLabel={triggerLabel}
-                triggerUrl={triggerUrl}
-                menuLinks={menuLinks}
-              ></NavigationElement>
-            )
-          )}
-        </div>
+    <div className="flex justify-between">
+      <div className="flex">
+        <a href="/home">
+          <Image
+            src={Logo}
+            className="min-w-[160px] w-[160px]"
+            alt="Page logo"
+          />
+        </a>
+        {navigationElements.map(
+          ({ triggerLabel, triggerUrl, menuLinks }, index) => (
+            <NavigationElement
+              lang={lang}
+              key={index}
+              triggerLabel={triggerLabel}
+              triggerUrl={triggerUrl}
+              menuLinks={menuLinks}
+            ></NavigationElement>
+          )
+        )}
       </div>
-    </>
+      <div className="flex">
+        {rightNavigationElements.map(
+          ({ triggerLabel, triggerUrl, menuLinks }, index) => (
+            <NavigationElement
+              lang={lang}
+              key={index}
+              triggerLabel={triggerLabel}
+              triggerUrl={triggerUrl}
+              menuLinks={menuLinks}
+            ></NavigationElement>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 
