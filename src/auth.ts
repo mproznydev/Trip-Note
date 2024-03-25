@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 
 import authConfig from "@/auth.config";
 import { db } from "@/db";
-import { loginRoute } from "./routes";
+import { loginRoute } from "@/routes";
 
 /*
   Use Prisma adapter and force JWT strategy instead of database one
