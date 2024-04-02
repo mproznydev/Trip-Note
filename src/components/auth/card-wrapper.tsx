@@ -1,3 +1,4 @@
+import BackButton from "@/components/auth/back-button";
 import {
   Card,
   CardContent,
@@ -6,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import BackButton from "./back-button";
 
 interface CardWrapperProps {
   children: React.ReactNode;
