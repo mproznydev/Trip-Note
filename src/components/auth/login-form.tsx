@@ -45,7 +45,7 @@ export default function LoginForm() {
 
   return (
     <CardWrapper
-      title="🔓Login"
+      title="🔓Sign In"
       description="Welcome Back"
       backButtonLabel="Don't have an account?"
       backButtonHref="/register"
@@ -93,7 +93,7 @@ export default function LoginForm() {
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button type="submit" className="w-full" disabled={isPending}>
-            Login
+            Sign In
           </Button>
         </form>
       </Form>
