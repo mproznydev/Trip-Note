@@ -1,7 +1,9 @@
 "use server";
 
+import { signIn } from "@/auth";
 import { getUserByEmail } from "@/data/user";
 import { db } from "@/db";
+import { DEFAULT_REDIRECT_ON_LOGIN } from "@/routes";
 import { RegisterSchema } from "@/schemas";
 import bcrypt from "bcryptjs";
 import * as z from "zod";
@@ -10,7 +12,7 @@ export async function register(fields: z.infer<typeof RegisterSchema>) {
   const validatedFields = RegisterSchema.safeParse(fields);
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields" };
+    return { error: "Invalid fields!" };
   }
 
   const { email, password } = validatedFields.data;
@@ -29,5 +31,11 @@ export async function register(fields: z.infer<typeof RegisterSchema>) {
     },
   });
 
-  return { success: "Registered" };
+  await signIn("credentials", {
+    email,
+    password,
+    redirectTo: DEFAULT_REDIRECT_ON_LOGIN,
+  });
+
+  return { success: "Account created successfully!" };
 }
