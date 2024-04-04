@@ -4,7 +4,6 @@ import { useDictionary } from "@/context/dictionary-provider";
 
 export default function Home() {
   const dictionary = useDictionary();
-  console.log(dictionary);
 
   return (
     <main>

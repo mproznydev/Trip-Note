@@ -22,8 +22,6 @@ export const {
   session: { strategy: "jwt" },
   callbacks: {
     async session({ session, token }) {
-      console.log(session.user.id, token.sub);
-
       if (token.sub) {
         session.user.id = token.sub;
       }
