@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { DEFAULT_REDIRECT_ON_LOGIN } from "@/routes";
 import { RegisterSchema } from "@/schemas";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import * as z from "zod";
 
 export async function register(fields: z.infer<typeof RegisterSchema>) {
@@ -24,18 +25,30 @@ export async function register(fields: z.infer<typeof RegisterSchema>) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await db.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-    },
-  });
+  try {
+    await db.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+      },
+    });
+  } catch {
+    return { error: "Something went wrong!" };
+  }
 
-  await signIn("credentials", {
-    email,
-    password,
-    redirectTo: DEFAULT_REDIRECT_ON_LOGIN,
-  });
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_REDIRECT_ON_LOGIN,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: "Something went wrong!" };
+    }
+
+    throw error;
+  }
 
   return { success: "Account created successfully!" };
 }
