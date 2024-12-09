@@ -1,16 +1,19 @@
 "use server";
 
+import { signIn } from "@/auth";
 import { getUserByEmail } from "@/data/user";
 import { db } from "@/db";
+import { DEFAULT_REDIRECT_ON_LOGIN } from "@/routes";
 import { RegisterSchema } from "@/schemas";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import * as z from "zod";
 
 export async function register(fields: z.infer<typeof RegisterSchema>) {
   const validatedFields = RegisterSchema.safeParse(fields);
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields" };
+    return { error: "Invalid fields!" };
   }
 
   const { email, password } = validatedFields.data;
@@ -22,12 +25,30 @@ export async function register(fields: z.infer<typeof RegisterSchema>) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await db.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-    },
-  });
+  try {
+    await db.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+      },
+    });
+  } catch {
+    return { error: "Something went wrong!" };
+  }
 
-  return { success: "Registered" };
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_REDIRECT_ON_LOGIN,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: "Something went wrong!" };
+    }
+
+    throw error;
+  }
+
+  return { success: "Account created successfully!" };
 }

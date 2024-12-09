@@ -1,19 +1,16 @@
 /**
- * Routes that are accessible to the public.
- * They do not require any authentication
- */
-export const publicRoutes: string[] = [
-  "/",
-  "/home",
-  "/auth/login",
-  "/auth/register",
-];
-
-/**
  * Routes that are used for authentication.
  * They are not accessible to logged in users and will redirect to default page
  */
-export const authRoutes: string[] = ["/auth/login", "/auth/register"];
+export const loginRoute: string = "/login";
+export const registerRoute: string = "/register";
+export const authRoutes: string[] = [loginRoute, registerRoute];
+
+/**
+ * Routes that are accessible to the public.
+ * They do not require any authentication
+ */
+export const publicRoutes: string[] = ["/", "/home", ...authRoutes];
 
 /**
  * Prefix for authentication API.
@@ -29,4 +26,4 @@ export const DEFAULT_REDIRECT_ON_LOGIN: string = "/user";
 /**
  * The default redirect path after trying to access a protected route
  */
-export const DEFAULT_REDIRECT_ON_UNAUTHORIZED: string = "/auth/login";
+export const DEFAULT_REDIRECT_ON_UNAUTHORIZED: string = loginRoute;

@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 
 import authConfig from "@/auth.config";
 import { db } from "@/db";
+import { loginRoute } from "@/routes";
 
 /*
   Use Prisma adapter and force JWT strategy instead of database one
@@ -15,11 +16,12 @@ export const {
   signOut,
 } = NextAuth({
   adapter: PrismaAdapter(db),
+  pages: {
+    signIn: loginRoute,
+  },
   session: { strategy: "jwt" },
   callbacks: {
     async session({ session, token }) {
-      console.log(session.user.id, token.sub);
-
       if (token.sub) {
         session.user.id = token.sub;
       }

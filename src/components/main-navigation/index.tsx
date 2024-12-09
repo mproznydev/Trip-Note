@@ -1,6 +1,4 @@
-import React from "react";
-import { NavigationElProps } from "../navigation-el";
-import NavigationEl from "../navigation-el";
+import NavigationEl, { NavigationElProps } from "@/components/navigation-el";
 import { Locale } from "@/i18n.config";
 
 const navigationElements = [
